@@ -1,0 +1,164 @@
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      controlDict;
+}
+
+application     incompressibleFluid;
+
+startFrom       startTime;
+
+startTime       0;
+
+stopAt          endTime;
+
+endTime         400;
+
+deltaT          1;
+
+writeControl    runTime;
+
+writeInterval   100;
+
+purgeWrite	2;
+
+adjustTimeStep  yes;
+
+maxCo           0.2;
+
+maxDeltaT       0.1;
+
+
+functions
+{
+    inletFlow
+    {
+        type            surfaceFieldValue;
+        libs            ("libfieldFunctionObjects.so");
+
+        writeControl    timeStep;
+        writeInterval   1;
+	writeFields	no;
+        log             yes;
+
+        regionType      patch;
+        name            inlet;
+
+        operation       sum;
+        fields          (phi);
+    }
+
+    outlet1Flow
+    {
+        type            surfaceFieldValue;
+        libs            ("libfieldFunctionObjects.so");
+
+        writeControl    timeStep;
+        writeInterval   1;
+	writeFields	no;
+        log             yes;
+
+        regionType      patch;
+        name            outlet1;
+
+        operation       sum;
+        fields          (phi);
+    }
+
+    outlet2Flow
+    {
+        type            surfaceFieldValue;
+        libs            ("libfieldFunctionObjects.so");
+
+        writeControl    timeStep;
+        writeInterval   1;
+	writeFields	no;
+        log             yes;
+
+        regionType      patch;
+        name            outlet2;
+
+        operation       sum;
+        fields          (phi);
+    }
+
+    outlet3Flow
+    {
+        type            surfaceFieldValue;
+        libs            ("libfieldFunctionObjects.so");
+
+        writeControl    timeStep;
+        writeInterval   1;
+	writeFields	no;
+        log             yes;
+
+        regionType      patch;
+        name            outlet3;
+
+        operation       sum;
+        fields          (phi);
+    }
+
+    leakFlow
+    {
+        type            surfaceFieldValue;
+        libs            ("libfieldFunctionObjects.so");
+
+	writeControl    timeStep;
+        writeInterval   1;
+	writeFields	no;
+        log             yes;
+
+        regionType      patch;
+        name            leakOutlet32;
+
+        operation       sum;
+        fields          (phi);
+    }
+
+    magU
+    {
+        type            mag;
+        libs            ("libfieldFunctionObjects.so");
+        field           U;
+        result          magU;
+        autowrite       yes;
+
+        writeControl    timeStep;
+        writeInterval   10;
+    }
+
+    maxU
+    {
+        type            volFieldValue;
+        libs            ("libfieldFunctionObjects.so");
+	select		all;
+        operation       max;
+        fields          (magU);
+        writeControl    timeStep;
+        writeInterval   10;
+	writeFields	no;
+        log             yes;
+    }
+
+    continuity
+    {
+        type            surfaceFieldValue;
+        libs            ("libfieldFunctionObjects.so");
+        regionType      patch;
+        name            inlet;
+        operation       sum;
+        fields          (phi);
+        writeControl    timeStep;
+        writeInterval   10;
+	writeFields	no;
+        log             yes;
+    }
+
+}
+
+// ************************************************************************* //
+

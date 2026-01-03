@@ -1,0 +1,174 @@
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      snappyHexMeshDict;
+}
+
+// Enable meshing features
+castellatedMesh true;
+snap            true;
+addLayers       false;
+
+geometry
+{
+    inlet.stl   { type triSurfaceMesh; name inlet; }
+    outlet1.stl { type triSurfaceMesh; name outlet1; }
+    outlet2.stl { type triSurfaceMesh; name outlet2; }
+    outlet3.stl { type triSurfaceMesh; name outlet3; }
+    wallLeakOutlet32.stl { type triSurfaceMesh; name wallLeakOutlet32; }
+
+    leakOutlet32.stl { type triSurfaceMesh; name leakOutlet32; }
+
+	leakBox
+	{
+    		type searchableBox;
+    		min (-0.93 2.97 -0.1975);
+    		max (-0.87 3.03 -0.1375);
+	}
+
+
+}
+
+castellatedMeshControls
+{
+    maxLocalCells 200000;
+    maxGlobalCells 1000000;
+    minRefinementCells 10;
+    nCellsBetweenLevels 3;
+
+    // link STL to castellation
+
+refinementSurfaces
+    {
+                inlet
+                {
+                    level (2 2);
+                    patchInfo
+                    {
+                        type patch;
+                    }
+                }
+
+                outlet1
+                {
+                    level (2 2);
+                    patchInfo
+                    {
+                        type patch;
+                    }
+                }
+
+                outlet2
+                {
+                    level (2 2);
+                    patchInfo
+                    {
+                        type patch;
+                    }
+                }
+
+                outlet3
+                {
+                    level (2 2);
+                    patchInfo
+                    {
+                        type patch;
+                    }
+                }
+
+                wallLeakOutlet32
+                {
+                    level (2 2);
+                    patchInfo
+                    {
+                        type wall;
+                    }
+                }
+
+	     	leakOutlet32
+		{
+    		    level (5 6);
+    		    patchInfo
+    		    {
+        		type patch;
+    		}
+	}
+ }
+
+
+    resolveFeatureAngle 60;
+    refinementRegions 
+    { 
+	leakBox
+        {
+            mode inside;
+            levels ((1e15 5));
+        }
+    }
+
+    locationInMesh (0 2 0);  
+    removeCellsOutside true;
+
+    allowFreeStandingZoneFaces true;
+}
+
+snapControls
+{
+    nSmoothPatch 5;
+    tolerance 1.0;
+    nSolveIter 300;
+    nRelaxIter 5;
+}
+
+addLayersControls
+{
+    relativeSizes true;
+    minThickness 0.1;
+    featureAngle 60;
+    nGrow 0;
+   
+    layers
+    {
+        wall
+        {
+            nSurfaceLayers 1;
+        }
+    }
+
+    expansionRatio 1.2;
+    finalLayerThickness 0.3;
+    maxFaceThicknessRatio 0.5;
+    maxThicknessToMedialRatio 0.3;
+    nSmoothThickness 10;
+    nSmoothNormals 10;
+    nSmoothDisplacement 90;
+    nBufferCellsNoExtrude 0;
+    nLayerIter 50;
+    nSmoothSurfaceNormals 1;
+    minMedianAxisAngle 90;
+    nRelaxIter 5;
+
+
+
+}
+
+meshQualityControls
+{
+    maxNonOrtho 75;
+    minVol 1e-10;
+    minTetQuality 1e-30;
+    maxConcave 80;
+    maxInternalSkewness 4;
+    maxBoundarySkewness 4;
+    minFaceWeight 0.05;
+    minVolRatio 0.01;
+    minTwist 0.02;
+    minDeterminant 0.001;
+    errorReduction 0.75;
+    nSmoothScale 4;
+}
+
+mergeTolerance 1e-6;
